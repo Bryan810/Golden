@@ -82,7 +82,7 @@ public class Metodos {
 
     public void estadisticasVideos(String idVideo) throws Exception {
 
-        String url = "https://www.googleapis.com/youtube/v3/videos?id=8pkQv5V2MEc&key=AIzaSyBMHhfr4Crs6OvrV7nEnWWSF7bmRDHkgOg&part=snippet,statistics&fields=items(snippet(publishedAt),statistics)";
+        String url = "https://www.googleapis.com/youtube/v3/videos?id=8pkQv5V2MEc&key=" + KEYGOLDEN + "&part=snippet,statistics&fields=items(snippet(publishedAt),statistics)";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         // optional default is GET
@@ -107,8 +107,14 @@ public class Metodos {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject json = jsonArray.getJSONObject(i);
             JSONObject fechapublicacion = json.getJSONObject("snippet");
-            String ojala = fechapublicacion.getString("publishedAt");
-            System.out.println(ojala);
+            JSONObject estadisticasBasicas = json.getJSONObject("statistics");
+            String contenido = "Fecha Publicación: "
+                    + fechapublicacion.getString("publishedAt")
+                    + " \nVistas: " + estadisticasBasicas.getString("viewCount")
+                    + " \nLikes: " + estadisticasBasicas.getString("likeCount")
+                    + " \nDislikes: " + estadisticasBasicas.getString("dislikeCount")
+                    + " \nTotal Comentarios: " + estadisticasBasicas.getString("commentCount");
+            System.out.println(contenido);
         }
     }
 
