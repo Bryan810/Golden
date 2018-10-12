@@ -8,6 +8,7 @@ package goldenoo;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ public class Metodos {
 
     public static final String KEYGOLDEN = "AIzaSyBMHhfr4Crs6OvrV7nEnWWSF7bmRDHkgOg";
 
-    public static void comentariosCanal(String idCanal) throws Exception {
+    public void idsCanal(String idCanal) throws Exception {
 
         String url = "https://www.googleapis.com/youtube/v3/search?order=date&"
                 + "part=id,snippet&fields=items(id(videoId),snippet(title,%20description))&"
@@ -77,6 +78,55 @@ public class Metodos {
         } catch (Exception e) {
         }
 
+    }
+
+    public static void estadisticasVideos(String idVideo) throws Exception {
+
+        String url = "https://www.googleapis.com/youtube/v3/videos?id=8pkQv5V2MEc&key=AIzaSyBMHhfr4Crs6OvrV7nEnWWSF7bmRDHkgOg&part=snippet,statistics&fields=items(snippet(publishedAt),statistics)";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        // optional default is GET
+        con.setRequestMethod("GET");
+        //add request header
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        int responseCode = con.getResponseCode();
+//        System.out.println("\nSending 'GET' request to URL : " + url);
+//        System.out.println("Response Code : " + responseCode);
+        BufferedReader in1 = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+        while ((inputLine = in1.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in1.close();
+        JSONObject myResponse = new JSONObject(response.toString());
+//        System.out.println(response);
+        JSONArray jsonArray = myResponse.getJSONArray("items");
+        System.out.println(jsonArray);
+        try {
+            System.out.println("*****************************************");
+            ArrayList<String> list = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length() - 1; i++) {
+                try {
+                    JSONObject json = jsonArray.getJSONObject(i);
+                    JSONObject fechaPublicacion = json.getJSONObject("snippet");
+                    JSONObject titulo = json.getJSONObject("statistics");
+                    String contenido = fechaPublicacion.getString("publishedAt") + " | = ";
+                    list.add(contenido);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            for (int i = 0; i < list.size(); i++) {
+                System.out.println("[" + (i + 1) + "] " + list.get(i));
+                //System.out.println(list.get(i));
+            }
+
+           } catch (Exception e) {
+        }
     }
 
 }
