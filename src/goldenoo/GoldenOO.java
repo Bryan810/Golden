@@ -22,7 +22,7 @@ public class GoldenOO {
         try {
             System.out.print("Ingrese Id del Canal= ");
             String idCanal = sc.next();
-            met.idsCanal(idCanal);
+            met.estadisticasVideos(idCanal);
         } catch (Exception e) {
             e.printStackTrace();
         }

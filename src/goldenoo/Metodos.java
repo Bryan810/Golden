@@ -80,7 +80,7 @@ public class Metodos {
 
     }
 
-    public static void estadisticasVideos(String idVideo) throws Exception {
+    public void estadisticasVideos(String idVideo) throws Exception {
 
         String url = "https://www.googleapis.com/youtube/v3/videos?id=8pkQv5V2MEc&key=AIzaSyBMHhfr4Crs6OvrV7nEnWWSF7bmRDHkgOg&part=snippet,statistics&fields=items(snippet(publishedAt),statistics)";
         URL obj = new URL(url);
@@ -104,28 +104,11 @@ public class Metodos {
 //        System.out.println(response);
         JSONArray jsonArray = myResponse.getJSONArray("items");
         System.out.println(jsonArray);
-        try {
-            System.out.println("*****************************************");
-            ArrayList<String> list = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length() - 1; i++) {
-                try {
-                    JSONObject json = jsonArray.getJSONObject(i);
-                    JSONObject fechaPublicacion = json.getJSONObject("snippet");
-                    JSONObject titulo = json.getJSONObject("statistics");
-                    String contenido = fechaPublicacion.getString("publishedAt") + " | = ";
-                    list.add(contenido);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            for (int i = 0; i < list.size(); i++) {
-                System.out.println("[" + (i + 1) + "] " + list.get(i));
-                //System.out.println(list.get(i));
-            }
-
-           } catch (Exception e) {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject json = jsonArray.getJSONObject(i);
+            JSONObject fechapublicacion = json.getJSONObject("snippet");
+            String ojala = fechapublicacion.getString("publishedAt");
+            System.out.println(ojala);
         }
     }
 
