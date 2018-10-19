@@ -20,9 +20,9 @@ public class GoldenOO {
         Metodos met = new Metodos();
         Scanner sc = new Scanner(System.in);
         try {
-            System.out.print("Ingrese Id del Canal= ");
+            System.out.print("Ingrese Id= ");
             String idCanal = sc.next();
-            met.estadisticasVideos(idCanal);
+            met.idsCanal(idCanal);
         } catch (Exception e) {
             e.printStackTrace();
         }
