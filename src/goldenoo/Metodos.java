@@ -25,7 +25,7 @@ public class Metodos {
     public void idsCanal(String idCanal) throws Exception {
 
         String url = "https://www.googleapis.com/youtube/v3/search?order=date&"
-                + "part=id,snippet&fields=items(id(videoId),snippet(title,%20description))&"
+                + "part=id,snippet&fields=items(id(videoId),snippet(title,description))&"
                 + "channelId=" + idCanal + "&maxResults=50&key=" + KEYGOLDEN;
         ArrayList<String> idVideos = new ArrayList<>();
         URL obj = new URL(url);
@@ -57,7 +57,9 @@ public class Metodos {
                     JSONObject id = json.getJSONObject("id");
                     String contenido = id.getString("videoId") + "\n\tTitulo: "
                             + titulo.getString("title") + "\n\tDescripción: "
-                            + titulo.getString("description") + ".";
+                            + titulo.getString("description")
+                            
+                            +".";
                     list.add(contenido);
 
                 } catch (JSONException e) {
