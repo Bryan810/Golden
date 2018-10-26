@@ -21,6 +21,7 @@ import org.json.XML;
 public class Metodos {
 
     public static final String KEYGOLDEN = "AIzaSyBMHhfr4Crs6OvrV7nEnWWSF7bmRDHkgOg";
+    public boolean contieneSub = false;
 
     public void idsCanal(String idCanal) throws Exception {
 
@@ -58,8 +59,7 @@ public class Metodos {
                     String contenido = id.getString("videoId") + "\n\tTitulo: "
                             + titulo.getString("title") + "\n\tDescripción: "
                             + titulo.getString("description")
-                            
-                            +".";
+                            + ".";
                     list.add(contenido);
 
                 } catch (JSONException e) {
@@ -75,6 +75,7 @@ public class Metodos {
                 estadisticasVideos(idVideos.get(i));
                 comentariosID(idVideos.get(i));
 //                System.out.println("[" + (i + 1) + "]" + idVideos.get(i));//Imprimo solo los ids de los videos
+                
             }
 
         } catch (Exception e) {
@@ -132,9 +133,12 @@ public class Metodos {
     }
 
     public void estadisticasVideos(String idVideo) throws Exception {
+        String a = "";
+
         String url = "https://www.googleapis.com/youtube/v3/videos?id=" + idVideo
-                + "&key=" + KEYGOLDEN + "&part=snippet,statistics"
-                + "&fields=items(snippet(publishedAt),statistics)";
+                + "&key=" + KEYGOLDEN + "&part=snippet,statistics,contentDetails"
+                + "&fields=items(snippet(publishedAt,%20thumbnails(medium(url)))"
+                + ",statistics,contentDetails(caption))";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         // optional default is GET
@@ -159,11 +163,23 @@ public class Metodos {
         System.out.println((char) 27 + "[34;43mEstadisticas");
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
+
                 JSONObject json = jsonArray.getJSONObject(i);
                 JSONObject fechapublicacion = json.getJSONObject("snippet");
+                JSONObject contentDetails = json.getJSONObject("contentDetails");
+                JSONObject thumbnails = fechapublicacion.getJSONObject("thumbnails");
+                JSONObject urlImagen = thumbnails.getJSONObject("medium");
                 JSONObject estadisticasBasicas = json.getJSONObject("statistics");
+                if (contentDetails.getString("caption").equalsIgnoreCase("true")) {
+                  //  a = subtitulosVideos(idVideo);
+                  a= "Si tiene Subtitulos" ;
+                } else {
+                    a = "No tiene Subtitulos.";
+                }
                 String contenido = "\tFecha Publicación: "
                         + fechapublicacion.getString("publishedAt")
+                        + " \n\tURL Imagen: " + urlImagen.getString("url")
+                        + " \n\tSubtitulos: " + a
                         + " \n\tVistas: " + estadisticasBasicas.getString("viewCount")
                         + " \n\tLikes: " + estadisticasBasicas.getString("likeCount")
                         + " \n\tDislikes: " + estadisticasBasicas.getString("dislikeCount")
@@ -171,12 +187,13 @@ public class Metodos {
                 System.out.println(contenido);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //  e.printStackTrace();
         }
 
     }
 
-    public void subtitulosVideos(String idVideoSub) throws Exception {
+    public String subtitulosVideos(String idVideoSub) throws Exception {
+        String contenido = "";
         ArrayList<String> contenidoSubtitulos = new ArrayList<>();
         String url = "http://video.google.com/timedtext?lang=es&v=" + idVideoSub;
         URL obj = new URL(url);
@@ -202,13 +219,24 @@ public class Metodos {
         JSONArray jsonArray = jsonObj.getJSONArray("text");
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
-                String contenido = "" + jsonArray.getJSONObject(i).getString("content");
+                contenido = "" + jsonArray.getJSONObject(i).getString("content");
                 //contenidoSubtitulos.add(""+jsonArray.getJSONObject(i).getString("content"));
                 System.out.println(contenido);
             }
         } catch (Exception e) {
 
         }
-
+        return contenido;
     }
+//
+//    public String tieneSubtitulos(String subtitulos) {
+//        String variable = "";
+//        if (subtitulos.equalsIgnoreCase("false")) {
+//            variable = "No";
+//        } else {
+//            variable = "Si";
+//        }
+//        return variable;
+//    }
+
 }
