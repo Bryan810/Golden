@@ -21,6 +21,7 @@ import org.json.XML;
 public class Metodos {
 
     public static final String KEYGOLDEN = "AIzaSyBMHhfr4Crs6OvrV7nEnWWSF7bmRDHkgOg";
+    public String nombreDelCanal;
     ManejoFicheros manFic = new ManejoFicheros();
 
     public void idsCanal(String idCanal) throws Exception {
@@ -49,6 +50,11 @@ public class Metodos {
         in.close();
         JSONObject myResponse = new JSONObject(response.toString());
         JSONArray jsonArray = myResponse.getJSONArray("items");
+        JSONObject jsonA = jsonArray.getJSONObject(1);
+        JSONObject tituloA = jsonA.getJSONObject("snippet");
+        manFic.crearCarpetaArchivos();
+        manFic.crearCarpeta(tituloA.getString("channelTitle"));
+        nombreDelCanal = tituloA.getString("channelTitle");
         try {
 
             ArrayList<String> list = new ArrayList<>();
@@ -57,19 +63,21 @@ public class Metodos {
                     JSONObject json = jsonArray.getJSONObject(i);
                     JSONObject titulo = json.getJSONObject("snippet");
                     JSONObject id = json.getJSONObject("id");
-                    String contenido = "\r\n\t" + (i) + "\r\n\tId:" + id.getString("videoId") + "\r\n\tTitulo: "
+                    String contenido = "\r\n\t" + (i + 1) + "\r\n\tId:" + id.getString("videoId") + "\r\n\tTitulo: "
                             + titulo.getString("title") + "\r\n\tDescripción: "
                             + titulo.getString("description")
                             + "\r\n";
 
                     list.add(id.getString("videoId"));
                     infoVideo.add(contenido);
-                    System.out.println((char) 27 + "[34;43mVideo Número: " + (i + 1) + contenido);
-                    manFic.crearArchivoDatos(titulo.getString("channelTitle"), infoVideo);
+                    //System.out.println((char) 27 + "[34;43mVideo Número: " + (i + 1) + contenido);
+//                    System.out.println("****************************************");
+//                    manFic.crearCarpeta(titulo.getString("channelTitle"));
+                    System.out.println(list.get(i) + " " + list.size() + " " + jsonArray.length());
+//                    System.out.println("****************************************");
+                    manFic.crearArchivoDatos("Ids"+titulo.getString("channelTitle"), nombreDelCanal, infoVideo);
                     comentarios = comentariosID(list.get(i));
-                    manFic.crearArchivoComentarios("comentarios", comentarios);
                     estadisticas = estadisticasVideos(list.get(i));
-                    manFic.crearArchivoEstadisticas("Estadisticas", estadisticas);
 
                 } catch (JSONException e) {
                     // e.printStackTrace();
@@ -109,7 +117,7 @@ public class Metodos {
 //        System.out.println(response);
         JSONArray jsonArray = myResponse.getJSONArray("items");
         // System.out.println(jsonArray);
-        System.out.println((char) 27 + "[34;43mEstadisticas");
+        //System.out.println((char) 27 + "[34;43mEstadisticas");
         ArrayList<String> estadisticasGrabar = new ArrayList<>();
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -136,8 +144,9 @@ public class Metodos {
                             + " \r\n\tTotal Comentarios: " + estadisticasBasicas.getString("commentCount")
                             + " \r\n\tSubtitulos: " + a + "\r\n";
 
-                    System.out.println(contenido);
+                    //System.out.println(contenido);
                     estadisticasGrabar.add(contenido);
+                    manFic.crearArchivoEstadisticas("Estadisticas",nombreDelCanal, estadisticasGrabar);
                 } catch (Exception e) {
                     //  e.printStackTrace();
                 }
@@ -183,10 +192,12 @@ public class Metodos {
                 JSONObject topLevelComment = snippet.getJSONObject("topLevelComment");
                 JSONObject snippet1 = topLevelComment.getJSONObject("snippet");
 
-                contenido = idActual + "\r\n" + snippet1.getString("textDisplay") + "\r\n"
+                contenido = (j + 1) + "\r\n" + idActual + "\r\n" + snippet1.getString("textDisplay") + "\r\n"
                         + "Likes: " + snippet1.getInt("likeCount") + "\r\n";
                 comentarios.add(contenido);
-                System.out.println(contenido);
+                //System.out.println(contenido);
+                manFic.crearArchivoComentarios("Comentarios De Video" + idActual,nombreDelCanal, comentarios);
+
             } catch (Exception e) {
                 //e.printStackTrace();
             }
@@ -225,7 +236,7 @@ public class Metodos {
             for (int i = 0; i < jsonArray.length(); i++) {
                 contenido = "" + jsonArray.getJSONObject(i).getString("content");
                 //contenidoSubtitulos.add(""+jsonArray.getJSONObject(i).getString("content"));
-                System.out.println(contenido);
+                //System.out.println(contenido);
             }
         } catch (Exception e) {
             // e.printStackTrace();
