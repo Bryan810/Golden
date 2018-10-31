@@ -108,7 +108,6 @@ public class Metodos {
                 } catch (JSONException e) {
                     // e.printStackTrace();
                 }
-                System.out.println("\t"+(i*100)/jsonArray.length()+"%");
             }
         } catch (Exception e) {
             //e.printStackTrace();

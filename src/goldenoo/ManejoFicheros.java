@@ -145,6 +145,7 @@ public class ManejoFicheros {
             BufferedWriter bw = new BufferedWriter(new FileWriter(archivo));
             for (int i = 0; i < comentarios.size(); i++) {
                 bw.write(comentarios.get(i));
+                bw.newLine();
             }
             bw.newLine();
             bw.close();
