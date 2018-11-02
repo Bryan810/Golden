@@ -292,4 +292,35 @@ public class Metodos {
         }
         return contenido;
     }
+
+    public String idsCanalPorUsuario(String userCanal) throws Exception {
+
+        String url = "https://www.googleapis.com/youtube/v3/channels?"
+                + "key=" + KEYGOLDEN
+                + "&forUsername="
+                + userCanal
+                + "&part=id&fields=items(id)";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        // optional default is GET
+        con.setRequestMethod("GET");
+        //add request header
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+        int responseCode = con.getResponseCode();
+//        System.out.println("\nSending 'GET' request to URL : " + url);
+//        System.out.println("Response Code : " + responseCode);
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        JSONObject myResponse = new JSONObject(response.toString());
+        JSONArray jsonArray = myResponse.getJSONArray("items");
+        JSONObject json = jsonArray.getJSONObject(0);
+        return json.getString("id");
+
+    }
 }
